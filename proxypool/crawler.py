@@ -43,21 +43,7 @@ class Crawler(object, metaclass=ProxyMetaclass):
                     port = tr.find('td:nth-child(2)').text()
                     yield ':'.join([ip, port])
 
-    def crawl_ip3366(self):
-        for i in range(1, 4):
-            start_url = 'http://www.ip3366.net/?stype=1&page={}'.format(i)
-            html = get_page(start_url)
-            if html:
-                find_tr = re.compile('<tr>(.*?)</tr>', re.S)
-                trs = find_tr.findall(html)
-                for s in range(1, len(trs)):
-                    find_ip = re.compile('<td>(\d+\.\d+\.\d+\.\d+)</td>')
-                    re_ip_address = find_ip.findall(trs[s])
-                    find_port = re.compile('<td>(\d+)</td>')
-                    re_port = find_port.findall(trs[s])
-                    for address,port in zip(re_ip_address, re_port):
-                        address_port = address+':'+port
-                        yield address_port.replace(' ','')
+
     
 
 
