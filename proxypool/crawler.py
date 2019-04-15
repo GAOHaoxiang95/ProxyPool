@@ -44,15 +44,20 @@ class Crawler(object, metaclass=ProxyMetaclass):
                     yield ':'.join([ip, port])
 
     def crawl_ip3366(self):
-        for page in range(1, 4):
-            start_url = 'http://www.ip3366.net/free/?stype=1&page={}'.format(page)
+        for i in range(1, 4):
+            start_url = 'http://www.ip3366.net/?stype=1&page={}'.format(i)
             html = get_page(start_url)
-            ip_address = re.compile('<tr>\s*<td>(.*?)</td>\s*<td>(.*?)</td>')
-            # \s * 匹配空格，起到换行作用
-            re_ip_address = ip_address.findall(html)
-            for address, port in re_ip_address:
-                result = address+':'+ port
-                yield result.replace(' ', '')
+            if html:
+                find_tr = re.compile('<tr>(.*?)</tr>', re.S)
+                trs = find_tr.findall(html)
+                for s in range(1, len(trs)):
+                    find_ip = re.compile('<td>(\d+\.\d+\.\d+\.\d+)</td>')
+                    re_ip_address = find_ip.findall(trs[s])
+                    find_port = re.compile('<td>(\d+)</td>')
+                    re_port = find_port.findall(trs[s])
+                    for address,port in zip(re_ip_address, re_port):
+                        address_port = address+':'+port
+                        yield address_port.replace(' ','')
     
 
 
